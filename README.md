@@ -15,3 +15,5 @@
 6. [단어 변환 Lv.3](https://github.com/importantsgit/Algorithm-Study/blob/main/AlgorithmProblemSolving.playground/Pages/P_43163.xcplaygroundpage/Contents.swift) - BFS<br><br>
 7. [불량 사용자 Lv.3](https://github.com/importantsgit/Algorithm-Study/blob/main/AlgorithmProblemSolving.playground/Pages/P_64064.xcplaygroundpage/Contents.swift) - 백트래킹<br><br>
 8. [보석 쇼핑 Lv.3](https://github.com/importantsgit/Algorithm-Study/blob/main/AlgorithmProblemSolving.playground/Pages/P_67258.xcplaygroundpage/Contents.swift) - 투포인터<br><br>
+9. [가장 먼 노드 Lv.3](https://github.com/importantsgit/Algorithm-Study/blob/main/AlgorithmProblemSolving.playground/Pages/P_49189.xcplaygroundpage/Contents.swift) - 다익스트라<br><br>
+10. [징검다리 건너기 Lv.3](https://github.com/importantsgit/Algorithm-Study/blob/main/AlgorithmProblemSolving.playground/Pages/P_64062.xcplaygroundpage/Contents.swift) - 이진탐색 / slidingWindow&PriorityQueue<br><br>
