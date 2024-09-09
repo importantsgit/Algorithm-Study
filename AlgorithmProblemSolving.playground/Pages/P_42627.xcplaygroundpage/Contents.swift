@@ -46,21 +46,30 @@ import Foundation
 
 func solution(_ jobs:[[Int]]) -> Int {
     var result = 0
-    let heap: Heap<(Int, Int)> = Heap(orderCriteria: <)
-    var lastTime = jobs.first[0]!
+    let heap: Heap<Task> = Heap(orderCriteria: <)
+    var lastTime = 0
     
     for index in 0..<jobs.count {
-        if lastTime == jobs.startIndex
+        let task = Task(inputTime: jobs[index][0], workTime: jobs[index][1])
+        if lastTime <= task.inputTime {
+            
+        }
+
     }
-    
-    var arr = [Int]()
-    
-    
-    
+
     return result
 }
 
-struct Heap<T> {
+struct Task: Comparable {
+    static func < (lhs: Task, rhs: Task) -> Bool {
+        lhs.workTime < rhs.workTime
+    }
+    
+    let inputTime: Int
+    let workTime: Int
+}
+
+struct Heap<T: Comparable> {
     var elements: [T] = []
     var orderCriteria: (T, T) -> Bool
     

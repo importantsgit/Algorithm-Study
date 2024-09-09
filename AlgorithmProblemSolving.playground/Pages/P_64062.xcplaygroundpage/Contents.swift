@@ -77,7 +77,7 @@ func solution(_ stones:[Int], _ k:Int) -> Int {
     return max
 }
 
-// 이 문제는 슬라이스 윈도우 + 우선순위 큐 조합으로도 풀 수 있다
+// 이 문제는 슬라이딩 윈도우 + 우선순위 큐 조합으로도 풀 수 있다
 func solution2(_ stones:[Int], _ k:Int) -> Int {
     if k == stones.count - 1 { return stones.count }
     
