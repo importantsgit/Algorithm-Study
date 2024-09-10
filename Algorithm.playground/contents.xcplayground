@@ -3,5 +3,6 @@
     <pages>
         <page name='PriorityQueue'/>
         <page name='Utils'/>
+        <page name='Queue'/>
     </pages>
 </playground>
