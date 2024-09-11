@@ -63,186 +63,62 @@ import Foundation
 
 func solution(_ board: [[Int]]) -> Int {
     let N = board.count
-    var visitedMap = [[Int]](repeating: [Int](repeating: Int.max, count: N), count: N)
-    var stack = [(Int, (Int, Int))]()
-    var direction = [1: (0, 1), 2: (0, -1), 3: (1, 0), 4: (-1, 0)]
-    stack.append((0, (0, 0)))
-    visitedMap[0][0] = 0
+    var costs = [[[Int]]](repeating: [[Int]](repeating: [Int](repeating: Int.max, count: 4), count: N), count: N)
+    var stack = [(x: Int, y: Int, cost: Int, dir: Int)]()
+    var direction = [(0, 1), (1, 0), (-1, 0), (0, -1)]
     
-
+    stack.append((x: 0, y: 0, cost: 0, dir: 0))
+    stack.append((x: 0, y: 0, cost: 0, dir: 1))
     
     while let node = stack.popLast() {
-        print(node.1)
-        let currentValue = visitedMap[node.1.1][node.1.0]
-        
-        for dir in 1...4 {
-            let dirPosition = direction[dir]!
-            print("dirPosition: \(dirPosition)")
-            let moveX = dirPosition.0 + node.1.0, moveY = dirPosition.1 + node.1.1
+        if (0..<N ~= node.x && 0..<N ~= node.y) &&
+            board[node.y][node.x] == 0 &&
+            costs[node.y][node.x][node.dir] >= node.cost {
             
-            if 0..<N ~= moveX && 0..<N ~= moveY && board[moveY][moveY] != 1 {
-                print("move: \(moveX), \(moveY), \(visitedMap.count)")
-                let nextValue = visitedMap[moveY][moveX]
-                
-                let addValue = (node.0 == 0 || node.0 == dir) ? 100 : 600
-                
-                if nextValue >= currentValue + addValue {
-                    if moveX == N - 1 && moveY == N - 1 {
-                        continue
-                    }
-                    print(currentValue, addValue)
-                    visitedMap[moveY][moveX] = currentValue + addValue
-                    stack.append((dir, (moveX, moveY)))
-                }
+            costs[node.y][node.x][node.dir] = node.cost
+            
+            if node.y == N-1 && node.x == N-1 { continue }
+            
+            for (nextDir, (x, y)) in direction.enumerated() {
+                let nextCost = nextDir == node.dir ? 100 : 600
+                stack.append((x: node.x + x, y: node.y + y, cost: nextCost, dir: nextDir))
             }
         }
     }
     
-    return visitedMap[N][N]
+    return costs[N-1][N-1].min()!
 }
 
-func solution3(_ board:[[Int]]) -> Int {
-    
-    var visitedMap = [[Int]](repeating: [Int](repeating: Int.max, count: board.count), count: board.count)
-    var visitingStack = [(MoveDirection, [Int])]()
-    
-    enum MoveDirection: CaseIterable {
-        case top
-        case bottom
-        case left
-        case right
-        case normal
-    }
-    
-    var moveDirection: [MoveDirection: (Int, Int)] = [
-        .right: (1,0),
-        .left: (-1,0),
-        .top: (0,-1),
-        .bottom: (0,1)
-    ]
-    
-    visitingStack.append((.normal, [0, 0]))
-    visitedMap[0][0] = 0
-
-    while let node = visitingStack.popLast() {
-        let currentValue = visitedMap[node.1.last!][node.1.first!]
-        
-        for direction in MoveDirection.allCases {
-            if direction == .normal { continue }
-            
-            
-            let position = moveDirection[direction]!
-            let x = position.0 + node.1.first!
-            let y = position.1 + node.1.last!
-
-            if (0..<board.count ~= x && 0..<board.count ~= y) && board[y][x] != 1 {
-                let nextValue = currentValue + ( node.0 == .normal || node.0 == direction ? 100 : 600)
-                
-                if visitedMap[y][x] >= nextValue {
-                    visitedMap[y][x] = nextValue
-                    visitingStack.append((direction, [x, y]))
-                }
-            }
-        }
-    }
-    
-    return visitedMap[board.count-1][board.count-1]
-}
-
-
-//var a = solution([[0,0,0],
-//          [0,0,0],
-//          [0,0,0]])
-//
-//print("900 \(a)")
-
-//a = solution( [[0,0,0,0,0,0,0,1],
-//           [0,0,0,0,0,0,0,0],
-//           [0,0,0,0,0,1,0,0],
-//           [0,0,0,0,1,0,0,0],
-//           [0,0,0,1,0,0,0,1],
-//           [0,0,1,0,0,0,1,0],
-//           [0,1,0,0,0,1,0,0],
-//           [1,0,0,0,0,0,0,0]])
-//
-//print("3800 \(a)")
-
-let a = solution(
-    [[0,0,1,0],
-     [0,0,0,0],
-     [0,1,0,1],
-     [1,0,0,0]])
-
-print("2100 \(a)")
-        
-//a = solution([[0,0,0,0,0,0],
-//          [0,1,1,1,1,0],
-//          [0,0,1,0,0,0],
-//          [1,0,0,1,0,1],
-//          [0,1,0,0,0,1],
-//          [0,0,0,0,0,0]])
-//
-//print("3200 \(a)")
-
-func solution1(_ board:[[Int]]) -> Int {
+func solutionBFS(_ board: [[Int]]) -> Int {
     let N = board.count
-    let dir = [[-1,0,1,0],[0,1,0,-1]]
+    var costs = Array(repeating: Array(repeating: Array(repeating: Int.max, count: 4), count: N), count: N)
+    var queue = [(x: Int, y: Int, dir: Int, cost: Int)]()
+    let directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  // 동, 남, 서, 북
     
-    // 좌표까지 경주로를 건설할 때 사용되는 최소 cost 저장, Int.max값으로 초기화
-    var costBoard = [[Int]](repeating: [Int](repeating: Int.max, count: N), count: N)
+    // 시작점 초기화
+    queue.append((0, 0, -1, 0))
     
-    func isInside(_ r: Int, _ c: Int) -> Bool {
-        if r < 0 || r >= N || c < 0 || c >= N {
-            return false
-        }
-        return true
-    }
-    
-    // dir: 현재 위치로 오게된 방향 인덱스
-    func dfs(_ cur: (r: Int, c: Int, cost: Int, dir: Int)) {
+    while !queue.isEmpty {
+        let (x, y, dir, cost) = queue.removeFirst()
         
-        // 이동한 곳이 벽이거나 배열에 저장된 최솟값 보다 큰 경우 바로 리턴
-        if board[cur.r][cur.c] == 1 || cur.cost > costBoard[cur.r][cur.c] {
-            return
+        if x == N-1 && y == N-1 {
+            continue  // 도착점에 도달했을 때의 처리
         }
         
-        // 최솟값으로 갱신
-        costBoard[cur.r][cur.c] = cur.cost
-    
-        // 상하좌우로 탐색
-        for idx in 0..<4 {
-            let nr = cur.r + dir[0][idx]
-            let nc = cur.c + dir[1][idx]
+        for (newDir, (dx, dy)) in directions.enumerated() {
+            let newX = x + dx
+            let newY = y + dy
             
-            if isInside(nr, nc) {
-                // 직전 방향과 같을 경우, cost + 100
-                if cur.dir == idx {
-                    dfs((r: nr, c: nc, cost: cur.cost + 100, idx))
-                } else {
-                // 방향을 꺾을 경우 코너 + 직선도로가 생기므로 cost + (100 + 500)
-                    dfs((r: nr, c: nc, cost: cur.cost + 600, idx))
-                }
+            guard 0..<N ~= newX && 0..<N ~= newY && board[newY][newX] == 0 else { continue }
+            
+            let newCost = cost + (dir == -1 || dir == newDir ? 100 : 600)
+            
+            if newCost < costs[newY][newX][newDir] {
+                costs[newY][newX][newDir] = newCost
+                queue.append((newX, newY, newDir, newCost))
             }
         }
     }
     
-    // 출발점 cost 0으로 갱신
-    
-    costBoard[0][0] = 0
-    
-    // 출발점에선 상하좌우 중 하, 우방향만 가능하므로 두 방향으로 dfs 함수 호출
-    
-    dfs((r: 0, c: 1, cost: 100, dir: 1))
-    dfs((r: 1, c: 0, cost: 100, dir: 2))
-    
-    // 도착점 최솟값 리턴
-    return costBoard[N - 1][N - 1]
+    return costs[N-1][N-1].min()!
 }
-
-let b = solution(
-    [[0,0,1,0],
-     [0,0,0,0],
-     [0,1,0,1],
-     [1,0,0,0]])
-
-print("2100 \(b)")
