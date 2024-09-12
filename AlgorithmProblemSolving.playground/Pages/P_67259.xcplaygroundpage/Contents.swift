@@ -63,6 +63,40 @@ import Foundation
 
 func solution(_ board: [[Int]]) -> Int {
     let N = board.count
+    var visitedMap = [[Int]](repeating: [Int](repeating: Int.max, count: N), count: N)
+    var stack = [(Int, (Int, Int), Int)]()
+    var direction = [1: (1, 0), 2: (-1, 0), 3: (0, 1), 4: (0, -1)]
+    
+    stack.append((1, (1, 0), 100))
+    stack.append((3, (0, 1), 100))
+    visitedMap[1][0] = 100
+    visitedMap[0][1] = 100
+    
+    while let node = stack.popLast() {
+        let currentX = node.1.0, currentY = node.1.1
+        
+        guard visitedMap[currentY][currentX] >= node.2 && board[currentY][currentX] != 1
+        else { continue }
+        
+        visitedMap[currentY][currentX] = node.2
+        
+        for dir in 1...4 {
+            let (nextX, nextY) = (direction[dir]!.0 + currentX, direction[dir]!.1 + currentY)
+            
+            if 0..<N ~= nextX && 0..<N ~= nextY {
+                let nextValue = (node.0 == dir ? 100 : 600) + node.2
+            
+                stack.append((dir, (nextX, nextY), nextValue))
+            }
+        }
+    }
+    
+    return visitedMap[N-1][N-1]
+}
+// 14, 25 틀림
+
+func solution(_ board: [[Int]]) -> Int {
+    let N = board.count
     var costs = [[[Int]]](repeating: [[Int]](repeating: [Int](repeating: Int.max, count: 4), count: N), count: N)
     var stack = [(x: Int, y: Int, cost: Int, dir: Int)]()
     var direction = [(0, 1), (1, 0), (-1, 0), (0, -1)]
@@ -88,6 +122,35 @@ func solution(_ board: [[Int]]) -> Int {
     
     return costs[N-1][N-1].min()!
 }
+/*
+ 테스트 1 〉    통과 (0.18ms, 16.2MB)
+ 테스트 2 〉    통과 (0.13ms, 16.4MB)
+ 테스트 3 〉    통과 (0.12ms, 16.1MB)
+ 테스트 4 〉    통과 (0.30ms, 16.3MB)
+ 테스트 5 〉    통과 (0.35ms, 16.5MB)
+ 테스트 6 〉    통과 (47.37ms, 16.1MB)
+ 테스트 7 〉    통과 (41.41ms, 16.3MB)
+ 테스트 8 〉    통과 (34.77ms, 16.5MB)
+ 테스트 9 〉    통과 (47.20ms, 16.6MB)
+ 테스트 10 〉    통과 (150.35ms, 16.1MB)
+ 테스트 11 〉    통과 (2034.75ms, 16.6MB)
+ 테스트 12 〉    통과 (9754.21ms, 16.6MB)
+ 테스트 13 〉    통과 (5.36ms, 16.4MB)
+ 테스트 14 〉    통과 (13.47ms, 16.3MB)
+ 테스트 15 〉    통과 (364.67ms, 16.5MB)
+ 테스트 16 〉    통과 (810.25ms, 16.7MB)
+ 테스트 17 〉    통과 (1146.53ms, 16.4MB)
+ 테스트 18 〉    통과 (2583.20ms, 16.7MB)
+ 테스트 19 〉    통과 (1079.14ms, 16.5MB)
+ 테스트 20 〉    통과 (61.00ms, 16.7MB)
+ 테스트 21 〉    통과 (30.39ms, 16.5MB)
+ 테스트 22 〉    통과 (1.01ms, 16.5MB)
+ 테스트 23 〉    통과 (0.54ms, 16.6MB)
+ 테스트 24 〉    통과 (0.64ms, 16.1MB)
+ 테스트 25 〉    통과 (0.28ms, 16.5MB)
+ 
+ */
+
 
 func solutionBFS(_ board: [[Int]]) -> Int {
     let N = board.count
@@ -122,3 +185,31 @@ func solutionBFS(_ board: [[Int]]) -> Int {
     
     return costs[N-1][N-1].min()!
 }
+/*
+ 테스트 1 〉    통과 (0.15ms, 16.1MB)
+ 테스트 2 〉    통과 (0.22ms, 16.3MB)
+ 테스트 3 〉    통과 (0.12ms, 16.3MB)
+ 테스트 4 〉    통과 (0.28ms, 16.3MB)
+ 테스트 5 〉    통과 (0.19ms, 16MB)
+ 테스트 6 〉    통과 (0.93ms, 16.4MB)
+ 테스트 7 〉    통과 (1.05ms, 16.5MB)
+ 테스트 8 〉    통과 (0.89ms, 16.3MB)
+ 테스트 9 〉    통과 (1.97ms, 16MB)
+ 테스트 10 〉    통과 (1.83ms, 16.7MB)
+ 테스트 11 〉    통과 (34.44ms, 16.7MB)
+ 테스트 12 〉    통과 (6.50ms, 16.4MB)
+ 테스트 13 〉    통과 (0.99ms, 16.5MB)
+ 테스트 14 〉    통과 (1.37ms, 16.4MB)
+ 테스트 15 〉    통과 (2.59ms, 16.3MB)
+ 테스트 16 〉    통과 (3.65ms, 16.7MB)
+ 테스트 17 〉    통과 (15.31ms, 16.6MB)
+ 테스트 18 〉    통과 (10.44ms, 16.5MB)
+ 테스트 19 〉    통과 (37.01ms, 16.3MB)
+ 테스트 20 〉    통과 (2.90ms, 16.4MB)
+ 테스트 21 〉    통과 (3.51ms, 16.6MB)
+ 테스트 22 〉    통과 (0.28ms, 16.4MB)
+ 테스트 23 〉    통과 (0.35ms, 16.2MB)
+ 테스트 24 〉    통과 (0.43ms, 16.4MB)
+ 테스트 25 〉    통과 (0.33ms, 16.6MB)
+
+ */
