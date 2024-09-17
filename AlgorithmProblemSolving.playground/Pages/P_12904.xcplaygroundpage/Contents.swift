@@ -76,6 +76,37 @@ extension String {
     }
 }
 
+// 이럴 경우 abbacde나 abbbde와 같은 경우를 감지하지 못함
+
+
+import Foundation
+
+func solution(_ s:String) -> Int {
+    var result = 0
+    var stringArray = Array(s)
+    
+    func expand(left: Int, right: Int) -> Int { // 팰린드롬 값 반환
+        var left = left, right = right
+        
+        while left >= 0 && right < stringArray.count && stringArray[left] == stringArray[right] {
+            left -= 1
+            right += 1
+        }
+
+        return right - left - 1
+    }
+    
+    for index in stringArray.indices {
+        let even = expand(left: index, right: index + 1)
+        let odd = expand(left: index, right: index)
+        
+        result = max(result, max(even, odd))
+    }
+
+    return result
+}
+// 단순하게 중간값을 정하여 기준을 중심으로 양쪽 비교
+
 
 print(solution("abcdcba"))
 print(solution("abacde"))
