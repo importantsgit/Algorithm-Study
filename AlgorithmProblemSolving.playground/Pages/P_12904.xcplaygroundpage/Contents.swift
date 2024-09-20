@@ -78,7 +78,6 @@ extension String {
 
 // 이럴 경우 abbacde나 abbbde와 같은 경우를 감지하지 못함
 
-
 import Foundation
 
 func solution(_ s:String) -> Int {
