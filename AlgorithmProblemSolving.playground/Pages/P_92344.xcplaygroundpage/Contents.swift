@@ -128,10 +128,12 @@ func solution(_ board:[[Int]], _ skill:[[Int]]) -> Int {
         
         if s[4]+1 < board.first!.count {
             sum[s[1]][s[4]+1] -= degree
+            lastColumn = max(lastColumn, s[4])
         }
         
         if s[3]+1 < board.count {
             sum[s[3]+1][s[2]] -= degree
+            lastRow = max(lastRow, s[3])
         }
         
         if s[4]+1 < board.first!.count && s[3]+1 < board.count {
@@ -140,23 +142,33 @@ func solution(_ board:[[Int]], _ skill:[[Int]]) -> Int {
         
         firstRow = min(firstRow, s[1])
         firstColumn = min(firstColumn, s[2])
-        lastRow = max(lastRow, s[3])
-        lastColumn = max(lastColumn, s[4])
     }
     
-    for row in firstRow...lastRow {
-        for col in firstColumn...lastColumn {
-            
+    // 행 방향 누적 합
+    for i in 0..<sum.count {
+        for j in 1..<sum[0].count {
+            sum[i][j] += sum[i][j-1]
+        }
+    }
+
+    // 열 방향 누적 합
+    for j in 0..<sum[0].count {
+        for i in 1..<sum.count {
+            sum[i][j] += sum[i-1][j]
         }
     }
     
+    var result = 0
+    for i in 0..<board.count {
+        for j in 0..<board[0].count {
+            if board[i][j] + sum[i][j] > 0 {
+                result += 1
+            }
+        }
+    }
     
-    
-    
-    print(sum)
-    return 0
+    return result
 }
 // [type> 1공격 2회복 (a,b) (c,d) >얼마나]
 solution([[5,5,5,5,5],[5,5,5,5,5],[5,5,5,5,5],[5,5,5,5,5]], [[1,0,0,3,4,4],[1,2,0,2,3,2],[2,1,0,3,1,2],[1,0,1,3,3,1]])
 solution([[1,2,3],[4,5,6],[7,8,9]], [[1,1,1,2,2,4],[1,0,0,1,1,2],[2,2,0,2,0,100]])
-
