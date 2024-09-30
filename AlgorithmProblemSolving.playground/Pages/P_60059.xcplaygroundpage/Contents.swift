@@ -24,3 +24,72 @@
 
  key를 시계 방향으로 90도 회전하고, 오른쪽으로 한 칸, 아래로 한 칸 이동하면 lock의 홈 부분을 정확히 모두 채울 수 있습니다.
  */
+
+import Foundation
+
+func solution(_ key:[[Int]], _ lock:[[Int]]) -> Bool {
+    
+    let keyRange = ((key.count - 1) ..< (key.count - 1) + lock.count)
+    
+    // MARK: 열쇠를 돌려서 풀어보자
+    func rotate(key: [[Int]]) -> [[Int]] {
+        var rotateKey = [[Int]](repeating: [Int](repeating: 1, count: key.count), count: key.count)
+        
+        for i in 0..<key.count {
+            for j in 0..<key.count {
+                rotateKey[key.count-j-1][i] = key[i][j]
+            }
+        }
+        
+        return rotateKey
+    }
+    
+    func matchingKey(key: [[Int]], expandLock: [[Int]], startX: Int, startY: Int) -> Bool {
+        var expandLock = expandLock
+        
+        for x in 0..<key.count {
+            for y in 0..<key.count {
+                print(startX, startY, x, y)
+                expandLock[startX+x][startY+y] += key[x][y]
+            }
+        }
+        
+        for x in keyRange {
+            for y in keyRange {
+                if expandLock[x][y] != 1 {
+                    return false
+                }
+            }
+        }
+        
+        return true
+    }
+    
+    var key = key
+    var expandLock = [[Int]](repeating: [Int](repeating: 1, count: 2 * (key.count - 1) + lock.count), count: 2 * (key.count - 1) + lock.count)
+    
+    for x in keyRange {
+        for y in keyRange {
+            expandLock[x][y] = lock[x-(key.count - 1)][y-(key.count - 1)]
+        }
+    }
+    
+    for i in 0...3 {
+        for startX in 0...(key.count+lock.count-2) {
+            for startY in 0...(key.count+lock.count-2) {
+                
+                if matchingKey(key: key, expandLock: expandLock, startX: startX, startY: startY) {
+                    return true
+                }
+            }
+        }
+        
+        if i == 3 { break }
+        key = rotate(key: key)
+    }
+    
+    return false
+}
+
+solution([[0, 0, 0], [1, 0, 0], [0, 1, 1]], [[1, 1, 1], [1, 1, 0], [1, 0, 1]])
+
