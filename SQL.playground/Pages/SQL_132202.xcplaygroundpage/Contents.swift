@@ -32,11 +32,11 @@
  SQL을 실행하면 다음과 같이 출력되어야 합니다.
 
  진료과코드    5월예약건수
- OB    1
- OS    1
- CS    2
- FM    2
- GS    2
+ OB         1
+ OS         1
+ CS         2
+ FM         2
+ GS         2
  */
 
 SELECT MCDP_CD AS "진료과코드", COUNT(*) AS "5월예약건수"
